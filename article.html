@@ -27,7 +27,7 @@
 
   <script>
     const slug = location.hash.slice(1);
-    const fileUrl = `https://raw.githubusercontent.com/YOUR_USERNAME/thairath/main/articles/${slug}.json`;
+    const fileUrl = `https://raw.githubusercontent.com/mmarandika/telegra-lite/main/articles/${slug}.json`;
 
     fetch(fileUrl)
       .then(res => { if (!res.ok) throw new Error(); return res.json(); })
