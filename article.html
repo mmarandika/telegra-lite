@@ -10,17 +10,13 @@
 
   <script>
     const slug = location.hash.slice(1);
-    const fileUrl = `https://raw.githubusercontent.com/mmarandika/telegra-lite/main/articles/667ab298-3cd7-4848-b49a-90ed5cc01048.json`;
-
-    fetch(fileUrl)
-      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-      .then(data => {
-        document.getElementById('article-title').innerText = data.title;
-        document.getElementById('article-content').innerHTML = data.body;
-      })
-      .catch(() => {
-        document.body.innerHTML = "<p>Artikel tidak ditemukan.</p>";
-      });
+    const data = JSON.parse(localStorage.getItem(slug));
+    if (data) {
+      document.getElementById('article-title').innerText = data.title;
+      document.getElementById('article-content').innerHTML = data.body;
+    } else {
+      document.body.innerHTML = "<p>Artikel tidak ditemukan.</p>";
+    }
   </script>
 </body>
 </html>
