@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Artikel</title>
+</head>
+<body>
+  <h1 id="article-title"></h1>
+  <div id="article-content"></div>
+
+  <script>
+    const slug = location.hash.slice(1);
+    const data = JSON.parse(localStorage.getItem(slug));
+    if (data) {
+      document.getElementById('article-title').innerText = data.title;
+      document.getElementById('article-content').innerHTML = data.body;
+    } else {
+      document.body.innerHTML = "<p>Artikel tidak ditemukan.</p>";
+    }
+  </script>
+</body>
+</html>
