@@ -3,6 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <title>Artikel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 2em auto;
+      padding: 0 1em;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 1em;
+    }
+    p {
+      line-height: 1.6;
+    }
+  </style>
 </head>
 <body>
   <h1 id="article-title"></h1>
@@ -10,13 +27,17 @@
 
   <script>
     const slug = location.hash.slice(1);
-    const data = JSON.parse(localStorage.getItem(slug));
-    if (data) {
-      document.getElementById('article-title').innerText = data.title;
-      document.getElementById('article-content').innerHTML = data.body;
-    } else {
-      document.body.innerHTML = "<p>Artikel tidak ditemukan.</p>";
-    }
+    const fileUrl = `https://raw.githubusercontent.com/YOUR_USERNAME/thairath/main/articles/${slug}.json`;
+
+    fetch(fileUrl)
+      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(data => {
+        document.getElementById('article-title').innerText = data.title;
+        document.getElementById('article-content').innerHTML = data.body;
+      })
+      .catch(() => {
+        document.body.innerHTML = "<p>Artikel tidak ditemukan.</p>";
+      });
   </script>
 </body>
 </html>
