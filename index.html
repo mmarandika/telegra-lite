@@ -1,55 +1,20 @@
+
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Buat Artikel</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
-    textarea { width: 100%; height: 300px; margin-top: 10px; }
-    button, input[type="file"] { margin-top: 10px; display: block; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegra Lite</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Buat Artikel</h1>
-  <input type="text" id="title" placeholder="Judul Artikel" />
-  <textarea id="content" placeholder="Tulis konten di sini..."></textarea>
-  
-  <input type="file" id="imageUpload" accept="image/*" />
-  <button onclick="insertImageFromURL()">Masukkan Link Gambar</button>
-  <button onclick="publish()">Terbitkan</button>
-
-  <script>
-    const content = document.getElementById('content');
-
-    // Upload dari komputer (hanya masukkan URL lokal sementara, Netlify tidak simpan)
-    document.getElementById('imageUpload').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const url = evt.target.result;
-          content.value += `\n<img src="${url}" alt="Gambar" />\n`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Masukkan gambar dari URL eksternal
-    function insertImageFromURL() {
-      const url = prompt("Masukkan URL gambar:");
-      if (url) {
-        content.value += `\n<img src="${url}" alt="Gambar" />\n`;
-      }
-    }
-
-    function publish() {
-      const title = document.getElementById('title').value;
-      const body = content.value;
-      const slug = crypto.randomUUID();
-
-      localStorage.setItem(slug, JSON.stringify({ title, body }));
-      location.href = `/article.html#${slug}`;
-    }
-  </script>
+  <div id="app">
+    <h1>Buat Artikel</h1>
+    <input type="text" id="title" placeholder="Judul Artikel" />
+    <textarea id="content" placeholder="Tulis konten di sini..."></textarea>
+    <button onclick="publish()">Terbitkan</button>
+    <p id="link"></p>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
