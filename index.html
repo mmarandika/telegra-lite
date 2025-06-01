@@ -1,30 +1,30 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Buat Artikel</title>
   <style>
     body { font-family: sans-serif; padding: 20px; background: #fafafa; }
     input, textarea, button { display: block; margin: 10px 0; width: 100%; max-width: 600px; }
-    img.preview { max-width: 100%; margin: 10px 0; }
+    img.preview { max-width: 100%; margin: 10px 0; display: none; }
   </style>
 </head>
 <body>
   <h1>Buat Artikel</h1>
-  <input type="text" id="title" placeholder="Judul Artikel"/>
+  <input type="text" id="title" placeholder="Judul Artikel" />
   <textarea id="content" rows="10" placeholder="Tulis konten di sini..."></textarea>
   
   <label>Upload Gambar:
-    <input type="file" id="imageUpload" accept="image/*"/>
-  </label>
-  <img id="imagePreview" class="preview" style="display:none"/>
-
-  <label>Atau masukkan URL Gambar:
-    <input type="url" id="imageURL" placeholder="https://..."/>
+    <input type="file" id="imageUpload" accept="image/*" />
   </label>
   
+  <label>Atau masukkan URL Gambar:
+    <input type="url" id="imageURL" placeholder="https://example.com/gambar.jpg" />
+  </label>
+  
+  <img id="imagePreview" class="preview" alt="Preview Gambar" />
+
   <button onclick="publish()">Terbitkan</button>
 
   <script>
@@ -33,38 +33,56 @@
     const imageURLInput = document.getElementById('imageURL');
     let insertedImageHTML = "";
 
+    function showImagePreview(src) {
+      imagePreview.src = src;
+      imagePreview.style.display = "block";
+      insertedImageHTML = `<img src="${src}" alt="Uploaded Image"/>`;
+    }
+
     uploadInput.addEventListener('change', () => {
       const file = uploadInput.files[0];
+      if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        insertedImageHTML = `<img src="${e.target.result}" alt="Uploaded Image"/>`;
-        imagePreview.src = e.target.result;
-        imagePreview.style.display = "block";
+        showImagePreview(e.target.result);
+        imageURLInput.value = "";
       };
-      if (file) reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
     });
 
     imageURLInput.addEventListener('input', () => {
-      const url = imageURLInput.value;
+      const url = imageURLInput.value.trim();
       if (url) {
-        insertedImageHTML = `<img src="${url}" alt="Linked Image"/>`;
-        imagePreview.src = url;
-        imagePreview.style.display = "block";
+        showImagePreview(url);
+        uploadInput.value = "";
+      } else {
+        imagePreview.style.display = "none";
+        insertedImageHTML = "";
       }
     });
 
     function publish() {
-      const title = document.getElementById('title').value;
-      const content = document.getElementById('content').value;
+      const title = document.getElementById('title').value.trim();
+      const content = document.getElementById('content').value.trim();
+      if (!title) {
+        alert("Judul artikel tidak boleh kosong.");
+        return;
+      }
       const slug = crypto.randomUUID();
       const html = `<!DOCTYPE html>
-<html lang="id"><head><meta charset="UTF-8"><title>${title}</title></head>
-<body><h1>${title}</h1>${insertedImageHTML}<p>${content.replace(/\n/g, "<br>")}</p></body></html>`;
+<html lang="id">
+<head><meta charset="UTF-8"><title>${title}</title></head>
+<body>
+  <h1>${title}</h1>
+  ${insertedImageHTML}
+  <p>${content.replace(/\n/g, "<br>")}</p>
+</body>
+</html>`;
       
       const blob = new Blob([html], { type: 'text/html' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = slug + ".html";
+      link.download = `${slug}.html`;
       link.click();
     }
   </script>
